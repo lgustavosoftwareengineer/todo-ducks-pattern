@@ -1,21 +1,81 @@
-//import React from 'react';
-const initialState = {};
+const Types = {
+  ADD_TO_DO: 'toDo-addToDo',
+  CHECK_TO_DO: 'toDo-checkToDo',
+};
+type ToDo = {
+  title: string;
+  check: boolean;
+};
 
-interface Action {
+type AddToDo = {
   type: string;
-  payload?: any;
-}
+  payload: ToDo;
+};
+type CheckToDo = {
+  type: string;
+  payload: {toDoIndex: number};
+};
+type State = {
+  data: ToDo[];
+};
 
-const toDoReducer = (state = initialState, action: Action) => {
-  const {type, payload} = action;
+type ActionType = AddToDo & CheckToDo;
 
-  switch (type) {
-    case 'typeName':
-      return {...state, ...payload};
+const Actions = {
+  addToDo: () => null,
+  checkToDo: () => null,
+};
+
+const INITIAL_STATE: State = {
+  data: [],
+};
+
+const toDoReducer = (state = INITIAL_STATE, action: ActionType) => {
+  switch (action.type) {
+    case Types.ADD_TO_DO: {
+      const {payload: toDo} = action;
+      const {data} = state;
+
+      return {
+        data: [...data, toDo],
+      };
+    }
+
+    case Types.CHECK_TO_DO: {
+      const {payload} = action;
+      const {toDoIndex} = payload;
+      const {data} = state;
+
+      if (!toDoIndex) {
+        return {
+          ...state,
+        };
+      }
+
+      const findToDo = data.find((_, index) => toDoIndex === index);
+
+      if (findToDo) {
+        findToDo.check = !findToDo.check;
+        return {
+          data: [
+            ...data.splice(0, toDoIndex),
+            findToDo,
+            ...data.splice(toDoIndex + 1),
+          ],
+        };
+      }
+
+      return {
+        ...state,
+      };
+    }
 
     default:
       return state;
   }
 };
+
+toDoReducer.actions = Actions;
+toDoReducer.initialState = INITIAL_STATE;
 
 export default toDoReducer;
