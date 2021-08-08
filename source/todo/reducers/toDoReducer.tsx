@@ -1,39 +1,27 @@
+import {ToDo, Action, State, Actions} from '../types/toDoTypes';
+
 const Types = {
   ADD_TO_DO: 'toDo-addToDo',
   CHECK_TO_DO: 'toDo-checkToDo',
 };
-type ToDo = {
-  title: string;
-  check: boolean;
-};
 
-type AddToDo = {
-  type: string;
-  payload: ToDo;
-};
-type CheckToDo = {
-  type: string;
-  payload: {toDoIndex: number};
-};
-type State = {
-  data: ToDo[];
-};
-
-type ActionType = AddToDo & CheckToDo;
-
-const Actions = {
-  addToDo: () => null,
-  checkToDo: () => null,
+const Actions: Actions = {
+  addToDo: (toDo: ToDo) => ({type: Types.ADD_TO_DO, payload: toDo}),
+  checkToDo: (toDoIndex: number) => ({
+    type: Types.CHECK_TO_DO,
+    payload: toDoIndex,
+  }),
 };
 
 const INITIAL_STATE: State = {
   data: [],
 };
 
-const toDoReducer = (state = INITIAL_STATE, action: ActionType) => {
+const toDoReducer = (state = INITIAL_STATE, action: Action) => {
   switch (action.type) {
     case Types.ADD_TO_DO: {
       const {payload: toDo} = action;
+      toDo.check = false;
       const {data} = state;
 
       return {
@@ -42,8 +30,7 @@ const toDoReducer = (state = INITIAL_STATE, action: ActionType) => {
     }
 
     case Types.CHECK_TO_DO: {
-      const {payload} = action;
-      const {toDoIndex} = payload;
+      const {payload: toDoIndex} = action;
       const {data} = state;
 
       if (!toDoIndex) {
