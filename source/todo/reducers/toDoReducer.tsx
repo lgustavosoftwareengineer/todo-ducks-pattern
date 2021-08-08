@@ -1,11 +1,11 @@
-import {ToDo, Action, State, Actions} from '../types/toDoTypes';
+import {ToDo, Action, State, Actions as ActionsType} from '../types/toDoTypes';
 
 const Types = {
   ADD_TO_DO: 'toDo-addToDo',
   CHECK_TO_DO: 'toDo-checkToDo',
 };
 
-const Actions: Actions = {
+const Actions: ActionsType = {
   addToDo: (toDo: ToDo) => ({type: Types.ADD_TO_DO, payload: toDo}),
   checkToDo: (toDoIndex: number) => ({
     type: Types.CHECK_TO_DO,
